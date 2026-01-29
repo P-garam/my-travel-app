@@ -37,21 +37,6 @@ export const validateTextInput = (text: string, maxLength: number = 200): string
 };
 
 /**
- * URL 검증: img src 등에 사용 (http/https만 허용)
- */
-export const isValidImageUrl = (url: string | null | undefined): boolean => {
-  if (!url || typeof url !== 'string') return false;
-  const trimmed = url.trim();
-  if (trimmed.length > 2000) return false;
-  try {
-    const parsed = new URL(trimmed);
-    return parsed.protocol === 'https:' || parsed.protocol === 'http:';
-  } catch {
-    return false;
-  }
-};
-
-/**
  * 배열 입력값 검증 (취미 등)
  */
 export const validateStringArray = (arr: string[], maxItems: number = 20): string[] => {
