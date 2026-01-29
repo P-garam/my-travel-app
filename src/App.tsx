@@ -23,7 +23,7 @@ import { getCurrentUser, signOut, onAuthStateChange, supabase, readAndClearAuthD
 import { saveTrip, getSavedTrips, deleteTrip, type SavedTrip } from './services/tripService';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { devLog, devWarn, logError } from './utils/logger';
-import { validateTextInput, validateStringArray } from './utils/security';
+import { validateTextInput, validateStringArray, isValidImageUrl } from './utils/security';
 
 /** 닉네임/프로필 없으면 '나의 여행자' 반환 */
 const getUserDisplayName = (u: SupabaseUser | null): string => {
@@ -148,19 +148,21 @@ const App: React.FC = () => {
         }
 
         if (accessToken && refreshToken) {
-          // URL 정리 (해시 제거)
-          window.history.replaceState({}, document.title, window.location.pathname);
-          
-          // 세션 설정
+          // 세션 설정 (해시 제거 전에 먼저 처리)
           const { data, error } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken,
           });
 
+          // URL 정리 (해시 제거)
+          window.history.replaceState({}, document.title, window.location.pathname);
+
           if (error) {
             logError('세션 설정', error);
-            setToastMessage('로그인 처리 중 문제가 발생했습니다. 다시 시도해주세요.');
-            setTimeout(() => setToastMessage(null), 5000);
+            setToastMessage(
+              '로그인 처리에 실패했습니다. Vercel 환경 변수(VITE_SUPABASE_ANON_KEY) 확인 후 재배포해주세요.'
+            );
+            setTimeout(() => setToastMessage(null), 6000);
           } else {
             // 세션 설정 후 짧은 딜레이를 주어 Supabase가 내부적으로 세션을 처리할 시간 제공
             await new Promise(resolve => setTimeout(resolve, 100));

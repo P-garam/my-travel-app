@@ -66,6 +66,10 @@ Supabase 대시보드 > Authentication > URL Configuration:
 ### 6. 카카오/네이버 OAuth
 각 플랫폼 개발자 콘솔에서 프로덕션 Redirect URI 등록 필요.
 
+### 7. Supabase 401 (auth/v1/user)
+로그인하지 않은 상태에서 `GET .../auth/v1/user 401 (Unauthorized)`는 **정상 동작**입니다.  
+Supabase가 세션을 확인할 때 유효한 세션이 없으면 401을 반환하며, 앱은 로그아웃 상태로 처리합니다.
+
 ---
 
 ## 📋 최종 점검
