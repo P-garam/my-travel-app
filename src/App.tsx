@@ -23,7 +23,20 @@ import { getCurrentUser, signOut, onAuthStateChange, supabase, readAndClearAuthD
 import { saveTrip, getSavedTrips, deleteTrip, type SavedTrip } from './services/tripService';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { devLog, devWarn, logError } from './utils/logger';
-import { validateTextInput, validateStringArray, isValidImageUrl } from './utils/security';
+import { validateTextInput, validateStringArray } from './utils/security';
+
+/** img src용 URL 검증 (http/https만 허용) - 외부 참조 에러 방지를 위해 App 내부 정의 */
+const isValidImageUrl = (url: string | null | undefined): boolean => {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim();
+  if (trimmed.length > 2000) return false;
+  try {
+    const parsed = new URL(trimmed);
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+  } catch {
+    return false;
+  }
+};
 
 /** 닉네임/프로필 없으면 '나의 여행자' 반환 */
 const getUserDisplayName = (u: SupabaseUser | null): string => {
