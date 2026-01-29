@@ -25,19 +25,6 @@ import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { devLog, devWarn, logError } from './utils/logger';
 import { validateTextInput, validateStringArray } from './utils/security';
 
-/** img src용 URL 검증 (http/https만 허용) - 외부 참조 에러 방지를 위해 App 내부 정의 */
-const isValidImageUrl = (url: string | null | undefined): boolean => {
-  if (!url || typeof url !== 'string') return false;
-  const trimmed = url.trim();
-  if (trimmed.length > 2000) return false;
-  try {
-    const parsed = new URL(trimmed);
-    return parsed.protocol === 'https:' || parsed.protocol === 'http:';
-  } catch {
-    return false;
-  }
-};
-
 /** 닉네임/프로필 없으면 '나의 여행자' 반환 */
 const getUserDisplayName = (u: SupabaseUser | null): string => {
   if (!u) return '나의 여행자';
@@ -381,7 +368,7 @@ const App: React.FC = () => {
           <div className="flex items-center gap-3">
             {user && (
               <div className="flex items-center gap-2">
-                {user.user_metadata?.avatar_url && isValidImageUrl(user.user_metadata.avatar_url) ? (
+                {user.user_metadata?.avatar_url && typeof user.user_metadata.avatar_url === 'string' && (user.user_metadata.avatar_url.startsWith('http://') || user.user_metadata.avatar_url.startsWith('https://')) ? (
                   <img src={user.user_metadata.avatar_url} alt={getUserDisplayName(user)} className="w-8 h-8 rounded-full border border-white/10" />
                 ) : (
                   <div className="w-8 h-8 rounded-full bg-white/10 border border-white/10 flex items-center justify-center">
@@ -491,7 +478,7 @@ const App: React.FC = () => {
             <>
               {/* 모바일: 아이콘만 표시, 데스크톱: 전체 정보 */}
               <div className="hidden md:flex items-center gap-3">
-                {user.user_metadata?.avatar_url && isValidImageUrl(user.user_metadata.avatar_url) ? (
+                {user.user_metadata?.avatar_url && typeof user.user_metadata.avatar_url === 'string' && (user.user_metadata.avatar_url.startsWith('http://') || user.user_metadata.avatar_url.startsWith('https://')) ? (
                   <img 
                     src={user.user_metadata.avatar_url} 
                     alt={getUserDisplayName(user)} 
@@ -508,7 +495,7 @@ const App: React.FC = () => {
               </div>
               {/* 모바일: 아바타만 표시 */}
               <div className="md:hidden">
-                {user.user_metadata?.avatar_url && isValidImageUrl(user.user_metadata.avatar_url) ? (
+                {user.user_metadata?.avatar_url && typeof user.user_metadata.avatar_url === 'string' && (user.user_metadata.avatar_url.startsWith('http://') || user.user_metadata.avatar_url.startsWith('https://')) ? (
                   <img 
                     src={user.user_metadata.avatar_url} 
                     alt={getUserDisplayName(user)} 

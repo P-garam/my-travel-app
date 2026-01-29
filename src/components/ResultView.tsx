@@ -19,19 +19,6 @@ import LoginModal from './LoginModal';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { Link } from 'react-router-dom';
 
-/** img src용 URL 검증 (http/https만 허용) - 외부 참조 에러 방지를 위해 내부 정의 */
-const isValidImageUrl = (url: string | null | undefined): boolean => {
-  if (!url || typeof url !== 'string') return false;
-  const trimmed = url.trim();
-  if (trimmed.length > 2000) return false;
-  try {
-    const parsed = new URL(trimmed);
-    return parsed.protocol === 'https:' || parsed.protocol === 'http:';
-  } catch {
-    return false;
-  }
-};
-
 function getGoogleMapsRouteUrl(dayPlan: DayItinerary): string {
   if (dayPlan.places.length === 0) return '';
   const origin = `${dayPlan.places[0].lat},${dayPlan.places[0].lng}`;
@@ -108,7 +95,7 @@ const ResultView: React.FC<ResultViewProps> = ({
           {user ? (
             <>
               <div className="hidden sm:flex items-center gap-2">
-                {user.user_metadata?.avatar_url && isValidImageUrl(user.user_metadata.avatar_url) ? (
+                {user.user_metadata?.avatar_url && typeof user.user_metadata.avatar_url === 'string' && (user.user_metadata.avatar_url.startsWith('http://') || user.user_metadata.avatar_url.startsWith('https://')) ? (
                   <img
                     src={user.user_metadata.avatar_url}
                     alt={getUserDisplayName(user)}
