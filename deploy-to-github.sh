@@ -12,7 +12,7 @@ echo "2. 모든 파일 스테이징..."
 git add .
 
 echo "3. 첫 커밋 생성..."
-git commit -m "Deploy: final security check and snapshot feature"
+git commit -m "First commit for deployment"
 
 echo "4. 원격 저장소 연결..."
 git remote add origin https://github.com/P-garam/my-travel-app.git
