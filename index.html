@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>여행 한 편 — Cinematic Travel Archive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg-color: #121110; 
+        --text-main: #ece8e1;
+        --accent-film: #ff8c00; 
+        --border-color: rgba(236, 232, 225, 0.08);
+      }
+      body {
+        font-family: 'Pretendard', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+        word-break: keep-all;
+      }
+      .font-serif { font-family: 'Cormorant Garamond', serif; }
+      .font-grotesk { font-family: 'Space Grotesk', sans-serif; }
+      
+      .text-hero { font-size: clamp(2.2rem, 9vw, 7.5rem); line-height: 0.9; }
+      .text-result-title { font-size: clamp(1.8rem, 5vw, 3.8rem); line-height: 1.1; }
+
+      .brutalist-line {
+        height: 1px;
+        background: var(--border-color);
+        width: 100%;
+      }
+
+      .noise {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        opacity: 0.05; z-index: 9999; pointer-events: none;
+        background: url('https://grainy-gradients.vercel.app/noise.svg');
+      }
+
+      .date-stamp {
+        font-family: 'Courier New', Courier, monospace;
+        color: var(--accent-film);
+        text-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+        letter-spacing: 1px;
+      }
+
+      /* Film Perforation effect */
+      .film-edge {
+        position: relative;
+      }
+      .film-edge::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 10px; bottom: 0;
+        width: 6px;
+        background-image: radial-gradient(circle, rgba(255,255,255,0.1) 2px, transparent 2px);
+        background-size: 100% 20px;
+        z-index: 10;
+      }
+
+      .editorial-img {
+        clip-path: polygon(0 0, 100% 0, 100% 96%, 96% 100%, 0 100%);
+        transition: all 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+      }
+      .group:hover .editorial-img {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 100%);
+        filter: contrast(1.05) saturate(1.1);
+      }
+
+      /* Range Slider Styling - Updated for better usability */
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+      }
+      
+      input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: rgba(236, 232, 225, 0.1);
+        border-radius: 2px;
+      }
+      
+      input[type="range"]::-webkit-slider-thumb {
+        height: 24px;
+        width: 24px;
+        border-radius: 50%;
+        background: var(--accent-film);
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -10px; /* track height(4)/2 - thumb height(24)/2 */
+        box-shadow: 0 0 15px rgba(255, 140, 0, 0.4);
+        border: 2px solid #121110;
+        transition: transform 0.2s;
+      }
+
+      input[type="range"]:focus::-webkit-slider-thumb {
+        transform: scale(1.1);
+      }
+
+      input[type="range"]::-moz-range-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: rgba(236, 232, 225, 0.1);
+        border-radius: 2px;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        height: 24px;
+        width: 24px;
+        border: 2px solid #121110;
+        border-radius: 50%;
+        background: var(--accent-film);
+        cursor: pointer;
+        box-shadow: 0 0 15px rgba(255, 140, 0, 0.4);
+      }
+
+      .scanline {
+        position: absolute;
+        width: 100%; height: 4px;
+        background: rgba(255, 255, 255, 0.02);
+        animation: scanline 12s linear infinite;
+        pointer-events: none;
+        z-index: 50;
+      }
+      @keyframes scanline {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100vh); }
+      }
+      
+      /* Ticket Print Animation - Smoother slide down */
+      @keyframes printTicket {
+        0% { 
+          transform: translateY(-100%); 
+          opacity: 0;
+          clip-path: inset(100% 0 0 0); 
+        }
+        100% { 
+          transform: translateY(0); 
+          opacity: 1; 
+          clip-path: inset(0 0 0 0);
+        }
+      }
+      .animate-print {
+        animation: printTicket 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      @keyframes fade-in {
+        0% { opacity: 0; transform: translateY(-10px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in {
+        animation: fade-in 0.3s ease-out forwards;
+      }
+
+      ::-webkit-scrollbar { width: 2px; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+
+      /* Hide browser default date picker icon */
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        display: none;
+        -webkit-appearance: none;
+        appearance: none;
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      input[type="date"]::-moz-calendar-picker-indicator {
+        display: none;
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "@google/genai": "https://esm.sh/@google/genai@^1.37.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "recharts": "https://esm.sh/recharts@^3.6.0",
+    "html2canvas": "https://esm.sh/html2canvas@1.4.1",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.39.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div class="noise"></div>
+    <div class="scanline"></div>
+    <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>

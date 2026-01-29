@@ -1,0 +1,8 @@
+
+{
+  "name": "여행 한 편",
+  "description": "A hip, AI-powered travel planner that creates aesthetic, SNS-ready itineraries with AI docents, personality reports, and Google Maps integration.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
